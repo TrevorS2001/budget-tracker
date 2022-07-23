@@ -45,6 +45,8 @@ function uploadTransaction() {
 
                     tranObjectStore.clear();
                     alert('Transactions submitted!');
+
+
                 })
                 .catch(error => {
                     console.log(error);
