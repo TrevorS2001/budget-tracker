@@ -1,5 +1,5 @@
-const APP = 'BudgetTracker-';
 const VERSION = 'version_01';
+const APP = 'BudgetTracker-';
 const CACHE = APP + VERSION;
 
 const FILE_CACHE = [
@@ -18,58 +18,53 @@ const FILE_CACHE = [
     './icons/icon-512x512.png',
 ];
 
-self.addEventListener('install', function (e) {
+self.addEventListener('activate',function(e){
     e.waitUntil(
-        caches.open(CACHE).then(function (cache) {
-            return cache.addAll(FILE_CACHE)
-        })
-    )
-});
-
-self.addEventListener('activate', function (e) {
-    e.waitUntil(
-        caches.keys().then(function (keyList) {
-            let cacheList = keyList.filter(function (key) {
+        caches.keys().then(function (keyList){
+            let cacheList=keyList.filter(function (key){
                 return key.indexOf(APP);
             });
-            cacheList.push(CACHE);
-            return Promise.all(keyList.map(function (key, i) {
-                if (cacheList.indexOf(key)=== -1) {
+        cacheList.push(CACHE);
+        return Promise.all(keyList.map(function (key, i){
+                if (cacheList.indexOf(key)===-1){
                     return caches.delete(keyList[i]);
-                }
+             }
             }));
         })
     )
 });
-
-self.addEventListener('activate', function (e) {
+self.addEventListener('install',function(e){
     e.waitUntil(
-        caches.keys().then(function (keyList) {
-            let cacheKeeplist = keyList.filter(function (key) {
+        caches.open(CACHE).then(function(cache){
+        return cache.addAll(FILE_CACHE)
+        })
+)
+});
+
+self.addEventListener('fetch',function(e){
+    e.respondWith(
+        caches.match(e.request).then(function (request){
+            if (request){
+                return request
+            } else{ 
+            return fetch(e.request)
+        }
+     })
+    )
+});
+
+self.addEventListener('activate',function(e){
+    e.waitUntil(
+        caches.keys().then(function(keyList){
+            let cacheKeeplist=keyList.filter(function (key){
                 return key.indexOf(APP);
             });
             cacheKeeplist.push(CACHE);
-
-            return Promise.all(keyList.map(function (key, i) {
-                if (cacheKeeplist.indexOf(key) === -1) {
-                    console.log('deleting cache : ' + keyList[i] );
-                    return caches.delete(keyList[i]);
+            return Promise.all(keyList.map(function (key, i){
+                if (cacheKeeplist.indexOf(key) === -1){
+                return caches.delete(keyList[i]);
                 }
-            }));
+        }));
         })
-    )
-});
-
-self.addEventListener('fetch', function (e) {
-    console.log('fetch request : ' + e.request.url);
-    e.respondWith(
-        caches.match(e.request).then(function (request) {
-            if (request) {
-                return request
-            } else { 
-                return fetch(e.request)
-            }
-
-        })
-    )
+)
 });
