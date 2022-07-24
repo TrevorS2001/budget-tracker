@@ -1,13 +1,13 @@
-const APP_PREFIX = 'BudgetTracker-';
+const APP = 'BudgetTracker-';
 const VERSION = 'version_01';
-const CACHE = APP_PREFIX + VERSION;
+const CACHE = APP + VERSION;
 
 const FILE_CACHE = [
     './index.html',
     './css/styles.css',
     './js/index.js',
-    './js/idb.js',
     './manifest.json',
+    './js/idb.js',
     './icons/icon-72x72.png',
     './icons/icon-96x96.png',
     './icons/icon-128x128.png',
@@ -30,7 +30,7 @@ self.addEventListener('activate', function (e) {
     e.waitUntil(
         caches.keys().then(function (keyList) {
             let cacheList = keyList.filter(function (key) {
-                return key.indexOf(APP_PREFIX);
+                return key.indexOf(APP);
             });
             cacheList.push(CACHE);
             return Promise.all(keyList.map(function (key, i) {
@@ -46,9 +46,9 @@ self.addEventListener('activate', function (e) {
     e.waitUntil(
         caches.keys().then(function (keyList) {
             let cacheKeeplist = keyList.filter(function (key) {
-                return key.indexOf(APP_PREFIX);
+                return key.indexOf(APP);
             });
-            cacheKeeplist.push(CACHE_NAME);
+            cacheKeeplist.push(CACHE);
 
             return Promise.all(keyList.map(function (key, i) {
                 if (cacheKeeplist.indexOf(key) === -1) {
@@ -64,11 +64,9 @@ self.addEventListener('fetch', function (e) {
     console.log('fetch request : ' + e.request.url);
     e.respondWith(
         caches.match(e.request).then(function (request) {
-            if (request) { // if cache is available, respond with cache
-                console.log('responding with cache : ' + e.request.url);
+            if (request) {
                 return request
-            } else {       // if there are no cache, try fetching request
-                console.log('file is not cached, fetching : ' + e.request.url);
+            } else { 
                 return fetch(e.request)
             }
 

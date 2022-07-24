@@ -9,20 +9,19 @@ request.onupgradeneeded = function(event) {
 request.onsuccess = function(event) {
     db = event.target.result;
     if (navigator.onLine) {
-        // todo: uploadTransaction();
+        uploadTransaction();
     }
 };
 
-// This function will be executed if we attempt to submit a new transaction and there's no internet connection
 function saveRecord(record) {
-    const transaction = db.transaction(['new_transaction'], 'readwrite');
     const  tranObjectStore = transaction.objectStore('new_transaction');
+    const transaction = db.transaction(['new_transaction'], 'readwrite');
     tranObjectStore.add(record);
 }
 
 function uploadTransaction() {
-    const transaction = db.transaction(['new_transaction'], 'readwrite');
     const tranObjectStore = transaction.objectStore('new_transaction');
+    const transaction = db.transaction(['new_transaction'], 'readwrite');
     const getAll = tranObjectStore.getAll();
 
     getAll.onsuccess = function() {
@@ -40,8 +39,8 @@ function uploadTransaction() {
                     if (serverResponse.message) {
                         throw new Error(serverResponse);
                     }
-                    const transaction = db.transaction(['new_transaction'], 'readwrite');
                     const tranObjectStore = transaction.objectStore('new_transaction');
+                    const transaction = db.transaction(['new_transaction'], 'readwrite');
 
                     tranObjectStore.clear();
                     alert('Transactions submitted!');
